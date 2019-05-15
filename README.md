@@ -11,7 +11,7 @@ This code contains two algorithms to detect it:
 
 2) Threshold. It makes a cut in temperature (intensity of the image) ignoring all the pixels which does not reach our threshold. Once again, we need binary images. As before, the final step is to make and plot the contours of the region of interest in green.
 
-Since this method is simpler than the previous one, this algorithm is selected by default. However, they can be chosen through 2 private ROS parameters: method ('thresh' by default and 'sobel') and threshold (200 by default but it can be any positive integer).
+Since this method is simpler than the previous one, this algorithm is selected by default. However, they can be chosen through  the private ROS parameter method ('thresh' by default and 'sobel'). Moreover, the threshold is also a private ROS parameter (200 by default but it can be any positive integer).
 
 Optionally, you can resize the image from the first topic
 
