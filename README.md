@@ -17,4 +17,4 @@ a) method. It chooses the method which we want to use through a string. To selec
 
 b) threshold. It chooses the threshold to the images through a non-negative integer. By default, 200 is set.
 
-Optionally, you can resize the image from the flip_image topic.
+Optionally, you can resize the image from the flip_image topic before processing the images.
