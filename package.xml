@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fire</name>
+  <version>1.0.0</version>
+
+  <!--description-->
+  <description>The fire detection package</description>
+
+  <!--maintainer -->
+  <maintainer email="sdiasua@upo.es">sergiod</maintainer>
+
+  <!-- license -->
+  <license>BSD</license>
+
+  <!-- What we used to create the package -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Packages we need at compile time-->
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+
+  <!-- Packages we need to build against this package-->
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+
+  <!-- Packages we need at runtime-->
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+
+  <export>
+  </export>
+</package>
