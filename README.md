@@ -9,7 +9,7 @@ This code contains two methods to detect it:
 
 1) Sobel. First, it obtains the border of the objects in a image, including the fire borders, through Sobel operators. After that, we seek for the strongest gradients and we plot it on the image in red colour. The final step is to make and plot the contours in green colour. Making contours requires binary images, so a threshold is needed.
 
-2) Threshold. It makes a cut in temperature (intensity of the image) ignoring all the pixels which does not reach our threshold. Once again, we need binary images. As before, the final step is to make and plot the contours of the region of interest in green.
+2) Threshold. It makes a cut in temperature ignoring all the pixels which does not reach our threshold. Once again, we need binary images. As before, the final step is to make and plot the contours of the region of interest in green.
 
 Since the Sobel method is more complex than the threshold method, the last one is selected by default. In addition, this node contains 2 private ROS parameters which are method and threshold.
 
