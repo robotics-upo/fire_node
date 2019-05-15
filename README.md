@@ -3,7 +3,7 @@ Detect fire using Python, ROS, and OpenCV
 
 Dependencies: rospy, and std_msgs
 
-The aim of this code is to detect the borders of a fire in thermal images. In order to do so, the node subscribes to the topic flip_image, getting the images, detects the fire in those images, if they exist, and publishes them in a new topic called fire.
+The aim of this code is to detect the borders of a fire in thermal images. In order to do so, the node subscribes to the topic flip_image to obtain the images, detects the fire in those images, if they exist, and publishes them in a new topic called fire.
 
 This code contains two algorithms to detect it:
 
