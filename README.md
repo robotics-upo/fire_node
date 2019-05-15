@@ -14,3 +14,5 @@ This code contains two algorithms to detect it:
 Since this method is simpler than the previous one, this algorithm is selected by default. However, they can be chosen through 2 private ROS parameters: method ('thresh' by default and 'sobel') and threshold (200 by default but it can be any positive integer).
 
 Optionally, you can resize the image from the first topic
+
+Note: You must create your ROS workspace and your package first
