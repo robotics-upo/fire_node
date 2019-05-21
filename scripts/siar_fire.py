@@ -12,6 +12,9 @@ import numpy as np
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 
+#Save files
+import os
+import random
 
 class Node(object):
     def __init__(self):
@@ -27,24 +30,30 @@ class Node(object):
         #Subscriber
         rospy.Subscriber("flip_image",Image,self.processimage)
 
-        #Default parameters
+        #Default common parameters
         rospy.set_param('~method','thresh')
-        rospy.set_param('~threshval',200)
+        rospy.set_param('~resize',1.00)
+        rospy.set_param('~path','home/firedetect/src/fire/nodesiar/images')
+        rospy.set_param('~save','no')
 
+        #Default thresh method parameters
+        rospy.set_param('~threshval',200)
+        rospy.set_param('~rows',2)
+        rospy.set_param('~cols',1)
 
     #Proccesing image from channel
     def processimage(self,msg):
         try:
-            #0) Confirm message and convert to opencv message
+            #1) Confirm message and convert to opencv message
             orig=self.br.imgmsg_to_cv2(msg,"bgr8")
             #drawimg=orig
 
-            #1) Resize image (OPTIONAL)
-            resized=cv2.resize(orig,None,fx=1.0,fy=1.0)
+            #2) Resize image (OPTIONAL)
+            resized=cv2.resize(orig,None,fx=rospy.get_param('~resize'),fy=rospy.get_param('~resize'))
             drawimg=resized
             #showImg(drawimg,1)
 
-            #2) Convert to single-channel image
+            #3) Convert to single-channel image
             gray=cv2.cvtColor(resized,cv2.COLOR_BGR2GRAY)
 
             # Methods
@@ -53,15 +62,18 @@ class Node(object):
                         
             if rospy.get_param('~method')=='thresh':
 
-                #3) Convert to binary image
+                #4) Convert to binary image
                 ret,thresh = cv2.threshold(gray,rospy.get_param('~threshval'), 255, cv2.THRESH_BINARY)
-                drawimg = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
-                #showImg(drawimg,2)
+                #showImg(drawimg,2)       
+                   
+                #5) Remove the noise through erode+dilation
+                kernel=np.ones((rospy.get_param('~rows'),rospy.get_param('~cols')),np.uint8)
+                img=cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel)
+                drawimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-                #4) Detect the largest area 
-                imc,contours,h=cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+                #6) Detect the fire
+                imc,contours,h=cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
                 maxC=max(contours,key=lambda c: cv2.contourArea(c))
-
                 ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),1)
                 #showImg(ima,3)
 
@@ -84,31 +96,31 @@ class Node(object):
                 #5) Draw the position of maximum gradient
                 #Back to color channel to show figures in color
                 drawimg=cv2.cvtColor(grad,cv2.COLOR_GRAY2BGR)
-                for k in np.arange(rows.size):
+
+                for k in np.arange(rows.size):  
+                    #IF TEMPERATURES WERE KNOWN USE THEM TO DISCARD FALSE +                          
                     x=rows[k]
                     y=cols[k]
+
                     cv2.circle(drawimg,(x,y),5,[0,0,255],1)
-                    
-                #showImg(drawimg,2)
-                #6) Convert to gray and binary image with filtering
-                gray=cv2.cvtColor(drawimg,cv2.COLOR_BGR2GRAY)
-
-                ret,thresh=cv2.threshold(gray,rospy.get_param('~threshval'),255,cv2.THRESH_BINARY)
-                drawImg = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
-
-                #7) Detect the largest area include the points
-                imc,contours,h=cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-                maxC=max(contours,key=lambda c: cv2.contourArea(c))
-
-                ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),2)
-                #showImg(ima,3)
+        
+                ima=drawimg
+                #showImg(grad2,2)
             else:
                 print('No method used')
 
-            #Final image to be published
+            ##Final image to be published
             rospy.loginfo("publish image on fire topic")
             self.pub.publish(self.br.cv2_to_imgmsg(ima))  
             self.loop_rate.sleep()
+
+            ##Save images for later analysis
+            if(rospy.get_param('~save')=='yes'):
+                number=random.randint(1e4,2e4)
+                string='fire'+str(number)+'.jpg'
+                #Simple example
+                #string='fire.jpg'
+                cv2.imwrite(os.path.join(rospy.get_param('~path'),string), ima)
 
         except Exception as err:
             print err
@@ -125,7 +137,7 @@ def showImg(img,number):
     
 if __name__=="__main__":
     try:
-        rospy.init_node("fire_siar") #Optional anonymous=True
+        rospy.init_node("fire_siar")
         my_node=Node()
         my_node.startnode()
     except rospy.ROSInterruptException:
