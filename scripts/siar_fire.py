@@ -31,7 +31,6 @@ class Node(object):
         rospy.Subscriber("flip_image",Image,self.processimage)
 
         #Default common parameters
-        rospy.set_param('~method','thresh')
         rospy.set_param('~resize',1.00)
         rospy.set_param('~path','home/firedetect/src/fire/nodesiar/images')
         rospy.set_param('~save','no')
@@ -56,58 +55,20 @@ class Node(object):
             #3) Convert to single-channel image
             gray=cv2.cvtColor(resized,cv2.COLOR_BGR2GRAY)
 
-            # Methods
-            #   Binary image + umbral METHOD 1
-            #   Sobel operator METHOD 2
-                        
-            if rospy.get_param('~method')=='thresh':
-
-                #4) Convert to binary image
-                ret,thresh = cv2.threshold(gray,rospy.get_param('~threshval'), 255, cv2.THRESH_BINARY)
-                #showImg(drawimg,2)       
-                   
-                #5) Remove the noise through erode+dilation
-                kernel=np.ones((rospy.get_param('~rows'),rospy.get_param('~cols')),np.uint8)
-                img=cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel)
-                drawimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-
-                #6) Detect the fire
-                imc,contours,h=cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-                maxC=max(contours,key=lambda c: cv2.contourArea(c))
-                ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),1)
-                #showImg(ima,3)
-
-            elif rospy.get_param('~method')=='sobel':
-                ddepth=cv2.CV_16S
-
-                grad_x=cv2.Sobel(gray,ddepth,1,0,ksize=3)
-                grad_y=cv2.Sobel(gray,ddepth,0,1,ksize=3)
-
-                abs_grad_x=cv2.convertScaleAbs(grad_x)
-                abs_grad_y=cv2.convertScaleAbs(grad_y)
+            #4) Convert to binary image
+            ret,thresh = cv2.threshold(gray,rospy.get_param('~threshval'), 255, cv2.THRESH_BINARY)
+            #showImg(drawimg,2)       
                 
-                #Sum both contributions equally
-                grad=cv2.addWeighted(abs_grad_x,0.5,abs_grad_y,0.5,0)
-                
-                #4) Detection of whitest pixel
-                whitest=np.amax(grad)
-                cols,rows=np.where(grad==whitest)
+            #5) Remove the noise through erode+dilation
+            kernel=np.ones((rospy.get_param('~rows'),rospy.get_param('~cols')),np.uint8)
+            img=cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel)
+            drawimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-                #5) Draw the position of maximum gradient
-                #Back to color channel to show figures in color
-                drawimg=cv2.cvtColor(grad,cv2.COLOR_GRAY2BGR)
-
-                for k in np.arange(rows.size):  
-                    #IF TEMPERATURES WERE KNOWN USE THEM TO DISCARD FALSE +                          
-                    x=rows[k]
-                    y=cols[k]
-
-                    cv2.circle(drawimg,(x,y),5,[0,0,255],1)
-        
-                ima=drawimg
-                #showImg(grad2,2)
-            else:
-                print('No method used')
+            #6) Detect the fire
+            imc,contours,h=cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+            maxC=max(contours,key=lambda c: cv2.contourArea(c))
+            ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),1)
+            #showImg(ima,3)
 
             ##Final image to be published
             rospy.loginfo("publish image on fire topic")
@@ -141,4 +102,4 @@ if __name__=="__main__":
         my_node=Node()
         my_node.startnode()
     except rospy.ROSInterruptException:
-        pass
+pass
