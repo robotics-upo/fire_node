@@ -23,6 +23,6 @@ d) save. If this parameter is 'yes', the images will be saved taking into accoun
 
 e) threshval. It makes a threshold on the images through a non-negative integer. By default, 200 is set.
 
-f) rows and cols. They are integers which are used to build the kernel (matrix) of the opening
+f) rows and cols. They are integers which are used to set the number of rows and columns of the kernel, respectively. Those are used to make the opening transformation.
 
 
