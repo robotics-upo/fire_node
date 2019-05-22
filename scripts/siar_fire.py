@@ -26,16 +26,14 @@ class Node(object):
 
         #Publisher
         self.pub=rospy.Publisher("fire",Image,queue_size=10)
-
+        
         #Subscriber
         rospy.Subscriber("flip_image",Image,self.processimage)
-
+        
         #Default common parameters
         rospy.set_param('~resize',1.00)
-        rospy.set_param('~path','home/firedetect/src/fire/nodesiar/images')
-        rospy.set_param('~save','no')
-
-        #Default thresh method parameters
+        rospy.set_param('~path','/home/sergiod/firedetect/src/fire/nodesiar/images')
+        rospy.set_param('~save',0)
         rospy.set_param('~threshval',200)
         rospy.set_param('~rows',2)
         rospy.set_param('~cols',1)
@@ -66,8 +64,11 @@ class Node(object):
 
             #6) Detect the fire
             imc,contours,h=cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-            maxC=max(contours,key=lambda c: cv2.contourArea(c))
-            ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),1)
+            if(contours==[]):
+                ima=drawimg
+            else:
+                maxC=max(contours,key=lambda c: cv2.contourArea(c))
+                ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),1)
             #showImg(ima,3)
 
             ##Final image to be published
@@ -76,12 +77,10 @@ class Node(object):
             self.loop_rate.sleep()
 
             ##Save images for later analysis
-            if(rospy.get_param('~save')=='yes'):
+            if(rospy.get_param('~save')==1):
                 number=random.randint(1e4,2e4)
                 string='fire'+str(number)+'.jpg'
-                #Simple example
-                #string='fire.jpg'
-                cv2.imwrite(os.path.join(rospy.get_param('~path'),string), ima)
+                cv2.imwrite(os.path.join(rospy.get_param('~path'),string),ima)
 
         except Exception as err:
             print err
@@ -103,3 +102,4 @@ if __name__=="__main__":
         my_node.startnode()
     except rospy.ROSInterruptException:
         pass
+
