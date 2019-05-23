@@ -29,7 +29,8 @@ class Node(object):
         
         #Subscriber
         rospy.Subscriber("flip_image",Image,self.processimage)
-        
+        #rospy.Subscriber("Pruebafuego",Image,self.processimage) #test images
+
         #Default common parameters
         rospy.set_param('~resize',1.00)
         rospy.set_param('~path','/home/sergiod/firedetect/src/fire/nodesiar/images')
@@ -42,41 +43,35 @@ class Node(object):
     def processimage(self,msg):
         try:
             #1) Confirm message and convert to opencv message
-            orig=self.br.imgmsg_to_cv2(msg,"bgr8")
-            #drawimg=orig
+            img=self.br.imgmsg_to_cv2(msg,"bgr8")
+            #showImg(img,1)
 
-            #2) Resize image (OPTIONAL)
-            resized=cv2.resize(orig,None,fx=rospy.get_param('~resize'),fy=rospy.get_param('~resize'))
-            drawimg=resized
-            #showImg(drawimg,1)
+            #2) Resize image
+            cv2.resize(img,None,fx=rospy.get_param('~resize'),fy=rospy.get_param('~resize'))
 
-            #3) Convert to single-channel image
-            gray=cv2.cvtColor(resized,cv2.COLOR_BGR2GRAY)
-
-            #4) Convert to binary image
-            ret,thresh = cv2.threshold(gray,rospy.get_param('~threshval'), 255, cv2.THRESH_BINARY)
-            #showImg(drawimg,2)       
+            #3) Convert to single channel image and then to binary image
+            ret,thresh = cv2.threshold(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),rospy.get_param('~threshval'), 255, cv2.THRESH_BINARY)      
                 
-            #5) Remove the noise through erode+dilation
+            #4) Remove the noise through erode+dilation
             kernel=np.ones((rospy.get_param('~rows'),rospy.get_param('~cols')),np.uint8)
             img=cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel)
             drawimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-            #6) Detect the fire
+            #5) Detect the fire
             imc,contours,h=cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
             if(contours==[]):
                 ima=drawimg
             else:
                 maxC=max(contours,key=lambda c: cv2.contourArea(c))
                 ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),1)
-            #showImg(ima,3)
+            #showImg(ima,2)
 
-            ##Final image to be published
+            #Final image to be published
             rospy.loginfo("publish image on fire topic")
             self.pub.publish(self.br.cv2_to_imgmsg(ima))  
             self.loop_rate.sleep()
 
-            ##Save images for later analysis
+            #Save images for later analysis
             if(rospy.get_param('~save')==1):
                 number=random.randint(1e4,2e4)
                 string='fire'+str(number)+'.jpg'
@@ -102,4 +97,3 @@ if __name__=="__main__":
         my_node.startnode()
     except rospy.ROSInterruptException:
         pass
-
