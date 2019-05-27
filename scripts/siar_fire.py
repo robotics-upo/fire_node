@@ -32,7 +32,6 @@ class Node(object):
         #rospy.Subscriber("Pruebafuego",Image,self.processimage) #test images
 
         #Default common parameters
-        rospy.set_param('~resize',1.00)
         rospy.set_param('~path','/home/sergiod/firedetect/src/fire/nodesiar/images')
         rospy.set_param('~save',0)
         rospy.set_param('~threshval',200)
@@ -46,25 +45,21 @@ class Node(object):
             img=self.br.imgmsg_to_cv2(msg,"bgr8")
             #showImg(img,1)
 
-            #2) Resize image
-            cv2.resize(img,None,fx=rospy.get_param('~resize'),fy=rospy.get_param('~resize'))
-
-            #3) Convert to single channel image and then to binary image
+            #2) Convert to single channel image and then to binary image
             ret,thresh = cv2.threshold(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),rospy.get_param('~threshval'), 255, cv2.THRESH_BINARY)      
                 
-            #4) Remove the noise through erode+dilation
+            #3) Remove the noise through erode+dilation
             kernel=np.ones((rospy.get_param('~rows'),rospy.get_param('~cols')),np.uint8)
-            img=cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel)
-            drawimg = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+            binimg=cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel)
 
-            #5) Detect the fire
-            imc,contours,h=cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+            #4) Detect the fire
+            imc,contours,h=cv2.findContours(binimg,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
             if(contours==[]):
-                ima=drawimg
+                ima=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
             else:
                 maxC=max(contours,key=lambda c: cv2.contourArea(c))
-                ima=cv2.drawContours(drawimg,[maxC],-1,(0,255,0),1)
-            #showImg(ima,2)
+                ima=cv2.drawContours(cv2.cvtColor(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),cv2.COLOR_GRAY2BGR),[maxC],-1,(0,0,255),1)
+            #showImg(img,2)
 
             #Final image to be published
             rospy.loginfo("publish image on fire topic")
@@ -97,3 +92,4 @@ if __name__=="__main__":
         my_node.startnode()
     except rospy.ROSInterruptException:
         pass
+   
