@@ -9,7 +9,7 @@ METHOD(S)
 
 1) Threshold. It makes a cut in temperature ignoring all the pixels which does not reach our threshold. Once again, we need binary images. As before, the final step is to make and plot the contours of the region of interest in green. Currently, false positives are discarded through an opening. That is, an erosion of the image followed by dilation.
 
-This node contains also 6 private ROS parameters:
+This node contains also 5 private ROS parameters:
 
 a) path. The path where to save the images.
 
