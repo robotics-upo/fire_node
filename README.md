@@ -11,14 +11,12 @@ METHOD(S)
 
 This node contains also 6 private ROS parameters:
 
-a) resize. It modifies the size of the image. By default, it is 1.00, maintining the original size.
+a) path. The path where to save the images.
 
-b) path. The path where to save the images.
+b) save. If this parameter is 1, the images will be saved taking into account the path parameter. By default, images are not saved.
 
-c) save. If this parameter is 1, the images will be saved taking into account the path parameter. By default, images are not saved.
+c) threshval. It makes a threshold on the images through a non-negative integer. By default, 200 is set.
 
-d) threshval. It makes a threshold on the images through a non-negative integer. By default, 200 is set.
-
-e) rows and cols. Integers which are used to set the number of rows and columns of the matrix for the opening transformation.
+d) rows and cols. Integers which are used to set the number of rows and columns of the matrix for the opening transformation.
 
 
