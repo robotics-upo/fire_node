@@ -59,7 +59,7 @@ class Node(object):
             else:
                 maxC=max(contours,key=lambda c: cv2.contourArea(c))
                 ima=cv2.drawContours(cv2.cvtColor(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),cv2.COLOR_GRAY2BGR),[maxC],-1,(0,0,255),1)
-            #showImg(img,2)
+            #showImg(ima,2)
 
             #Final image to be published
             rospy.loginfo("publish image on fire topic")
