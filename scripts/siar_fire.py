@@ -29,10 +29,9 @@ class Node(object):
         
         #Subscriber
         rospy.Subscriber("flip_image",Image,self.processimage)
-        #rospy.Subscriber("Pruebafuego",Image,self.processimage) #test images
 
         #Default common parameters
-        rospy.set_param('~path','/home/sergiod/firedetect/src/fire/nodesiar/images')
+        rospy.set_param('~path','/home/sergiod/catkin_ws/src/fire/nodesiar/images')
         rospy.set_param('~save',0)
         rospy.set_param('~threshval',200)
         rospy.set_param('~rows',2)
@@ -92,4 +91,3 @@ if __name__=="__main__":
         my_node.startnode()
     except rospy.ROSInterruptException:
         pass
-   
