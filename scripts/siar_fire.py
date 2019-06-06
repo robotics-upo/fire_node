@@ -31,7 +31,7 @@ class Node(object):
         rospy.Subscriber("flip_image",Image,self.processimage)
 
         #Default common parameters
-        rospy.set_param('~path','/home/sergiod/catkin_ws/src/fire/nodesiar/images')
+        rospy.set_param('~path','/home/sergiod/catkin_ws/src/fireimage/images')
         rospy.set_param('~save',0)
         rospy.set_param('~threshval',200)
         rospy.set_param('~rows',2)
