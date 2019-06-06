@@ -21,5 +21,3 @@ d) rows and cols. Integers which are used to set the number of rows and columns 
 
 
 Flip image is a topic which is created from using flip-image ROS node package: https://github.com/robotics-upo/flip_image
-
-Moreover, you need also to install ROS SeekThermal node and their libraries:   https://github.com/ethz-asl/seekthermal_ros
