@@ -5,9 +5,9 @@ Dependencies: rospy, and std_msgs
 
 The aim of this code is to detect the borders of a fire in thermal images. In order to do so, the node subscribes to the topic flip_image to obtain the images, detects the fire in those images, if they exist, and publishes them in a new topic called fire.
 
-METHOD(S)
+METHOD: Threshold. 
 
-1) Threshold. It makes a cut in temperature ignoring all the pixels which does not reach our threshold. Once again, we need binary images. As before, the final step is to make and plot the contours of the region of interest in green. Currently, false positives are discarded through an opening. That is, an erosion of the image followed by dilation.
+It makes a cut in temperature ignoring all the pixels which does not reach our threshold. Once again, we need binary images. As before, the final step is to make and plot the contours of the region of interest in green. Currently, false positives are discarded through an opening. That is, an erosion of the image followed by dilation.
 
 This node contains also 5 private ROS parameters:
 
@@ -20,4 +20,4 @@ c) threshval. It makes a threshold on the images through a non-negative integer.
 d) rows and cols. Integers which are used to set the number of rows and columns of the matrix for the opening transformation.
 
 
-Flip image is a topic which is created from using flip-image ROS node package: https://github.com/robotics-upo/flip_image
+Flip image is a topic created from using flip-image ROS node package: https://github.com/robotics-upo/flip_image
