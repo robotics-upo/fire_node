@@ -7,7 +7,7 @@ The aim of this code is to detect the borders of a fire in thermal images. In or
 
 METHOD: Threshold. 
 
-It makes a cut in temperature ignoring all the pixels which does not reach our threshold. Once again, we need binary images. As before, the final step is to make and plot the contours of the region of interest in green. Currently, false positives are discarded through an opening. That is, an erosion of the image followed by dilation.
+It makes a cut in intensity ignoring all the pixels which does not reach our threshold. We use binary images. As before, the final step is to make and plot the contours of the region of interest in red. Currently, false positives are discarded through an opening. That is, an erosion of the image followed by dilation but more tests are needed.
 
 This node contains also 5 private ROS parameters:
 
