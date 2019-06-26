@@ -8,6 +8,9 @@ import cv2
 #Numpy
 import numpy as np
 
+#rospkg for getting path
+import rospkg
+
 #Convert cv file ros files
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
@@ -18,6 +21,13 @@ import random
 
 class Node(object):
     def __init__(self):
+
+	#get package path 
+	rospack = rospkg.RosPack()
+	#rospack.list()
+	pkg_path = rospack.get_path('Fire-node')
+	img_path = pkg_path + '/images'
+
         #Package bridge
         self.br=CvBridge()
 
@@ -29,9 +39,12 @@ class Node(object):
         
         #Subscriber
         rospy.Subscriber("flip_image",Image,self.processimage)
+        #rospy.Subscriber("Pruebafuego",Image,self.processimage) #test images
+
 
         #Default common parameters
-        rospy.set_param('~path','/home/sergiod/catkin_ws/src/fireimage/images')
+        #rospy.set_param('~path','/home/sergiod/catkin_ws/src/fireimage/images')
+	rospy.set_param('~path', img_path)
         rospy.set_param('~save',0)
         rospy.set_param('~threshval',200)
         rospy.set_param('~rows',2)

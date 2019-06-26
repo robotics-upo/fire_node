@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="fire" type="siar_fire.py" name="siarfire"> 
+    <remap from="flip_image" to="thermal_camera/image_colored"/>
+  </node>
+</launch>
