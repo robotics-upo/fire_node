@@ -1,5 +1,21 @@
 <launch>
-  <node pkg="fire" type="siar_fire.py" name="siarfire"> 
+
+  <!--Start flip-image node-->
+  <node pkg="flip_image" type="flip_image_node" name="flip_image_node"> 
+  </node>
+
+  <!--Start camera driver-->
+  <node pkg="seekthermal_ros" type="seekthermal_ros_node" respawn="true" name="seekthermalRosNode" output="screen">
+    <rosparam file="$(find seekthermal_ros)/config/seekthermal_ros.yaml" command="load" />
+  </node> 
+  
+  <!--Start fire detector node-->
+  <node pkg="Fire-node" type="siar_fire.py" name="findFire_node"> 
     <remap from="flip_image" to="thermal_camera/image_colored"/>
   </node>
+
+  <!--Start temperature detection node-->
+  <node pkg="seekthermaltemp" type="siar_temps.py" name="getTemperatures_node"> 
+  </node>
+
 </launch>
