@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>Fire-node</name>
+  <name>fire_node</name>
   <version>1.0.0</version>
 
   <!--description-->
   <description>The fire detection package through images</description>
 
-  <!--maintainer -->
-  <maintainer email="sdiasua@upo.es">sergiod</maintainer>
-
   <!-- license -->
   <license>BSD</license>
+  
+  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
+  <maintainer email="siar@todo.todo">siar</maintainer>
 
   <!-- What we used to create the package -->
   <buildtool_depend>catkin</buildtool_depend>
