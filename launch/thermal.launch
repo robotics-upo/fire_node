@@ -1,16 +1,24 @@
 <launch>
 
+  <arg name="namespace" default=""/>
+
+
   <!--Start flip-image node-->
-  <node pkg="flip_image" type="flip_image_node" name="flip_image_node"> 
+  <node pkg="flip_image" type="flip_image_node" name="flip_image_node">
+    <remap from="input_image" to="thermal_camera/image_colored"/> 
+    <remap from="flip_image" to="thermal_camera/flip_image_colored"/> 
   </node>
 
   <!--Start camera driver-->
   <node pkg="seekthermal_ros" type="seekthermal_ros_node" respawn="true" name="seekthermalRosNode" output="screen">
     <rosparam file="$(find seekthermal_ros)/config/seekthermal_ros.yaml" command="load" />
+    <remap from="seekthermalRosNode/thermal_camera/image_colored" to="thermal_camera/image_colored"/>
+    <remap from="seekthermalRosNode/thermal_camera/image_raw" to="thermal_camera/image_raw"/>
+    <remap from="seekthermalRosNode/thermal_camera/thermal_image_raw" to="thermal_camera/thermal_image_raw"/>
   </node> 
   
   <!--Start fire detector node-->
-  <node pkg="Fire-node" type="siar_fire.py" name="findFire_node"> 
+  <node pkg="fire_node" type="siar_fire.py" name="findFire_node"> 
     <remap from="flip_image" to="thermal_camera/image_colored"/>
   </node>
 
